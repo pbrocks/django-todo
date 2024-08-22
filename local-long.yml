@@ -23,6 +23,7 @@ services:
     container_name: todo_local_django
     depends_on:
       - todo_postgres
+      - todo_redis
       - todo_mailpit
     volumes:
       - .:/app:z
@@ -85,3 +86,38 @@ services:
           - todo_postgres
       ports:
           - '${FORWARD_PMA_PORT:-8306}:80'
+
+  todo_redis:
+    logging: *default-logging
+    image: redis:6
+    container_name: todo_local_redis
+
+  todo_celeryworker:
+    <<: *django
+    image: todo_local_celeryworker
+    container_name: todo_local_celeryworker
+    depends_on:
+      - todo_redis
+      - todo_postgres
+      - todo_mailpit
+    ports: []
+    command: /start-celeryworker
+
+  todo_celerybeat:
+    <<: *django
+    image: todo_local_celerybeat
+    container_name: todo_local_celerybeat
+    depends_on:
+      - todo_redis
+      - todo_postgres
+      - todo_mailpit
+    ports: []
+    command: /start-celerybeat
+
+  todo_flower:
+    <<: *django
+    image: todo_local_flower
+    container_name: todo_local_flower
+    ports:
+      - '5566:5566'
+    command: /start-flower

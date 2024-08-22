@@ -1,8 +1,8 @@
 # PostgreSQL
 # ------------------------------------------------------------------------------
-POSTGRES_HOST=postgres
+POSTGRES_HOST=todo_postgres
 POSTGRES_PORT=5432
-POSTGRES_DB=rodo_pbrocks
+POSTGRES_DB=todo_pbrocks
 POSTGRES_USER=XiErYSceMhuWKPejGHGLPEQBYVPavgyH
 POSTGRES_PASSWORD=OzavfJ3xj8g4L2emtzAH6BuZzlkVb8oB9ZsFrSuGaPafnED87po0XrZrjqSeWady
 DATABASE_URL=postgres://XiErYSceMhuWKPejGHGLPEQBYVPavgyH:OzavfJ3xj8g4L2emtzAH6BuZzlkVb8oB9ZsFrSuGaPafnED87po0XrZrjqSeWady@postgres:5432/todo
