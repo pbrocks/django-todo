@@ -1,4 +1,4 @@
-# django-todo
+# pbrocks/django-todo
 
 django-todo is a pluggable, multi-user, multi-group task management and
 assignment application for Django, designed to be dropped into an existing site as a reusable app. django-todo can be used as a personal to-do tracker, or a group task management system, or a ticketing system for organizations (or all of these at once!)
@@ -18,7 +18,6 @@ assignment application for Django, designed to be dropped into an existing site 
 * Batch-export tasks in CSV Format
 * Multiple file attachments per task (see settings)
 * Integrated mail tracking (unify a task list with an email box)
-
 
 ## Requirements
 
@@ -79,7 +78,6 @@ Make sure you've installed the Django "sites" framework and have specified the d
 Put django-todo/todo somewhere on your Python path, or install via pip:
 
     pip install django-todo
-
 
 Add to your settings:
 
@@ -172,7 +170,6 @@ django-todo has the ability to batch-import ("upsert") tasks from a specifically
 
 Link from your navigation to `{url "todo:import_csv"}`. Follow the resulting link for the CSV web upload view.
 
-
 ### CSV Formatting
 
 Copy `todo/data/import_example.csv` to another location on your system and edit in a spreadsheet or directly.
@@ -183,7 +180,6 @@ The first four columns: `'Title', 'Group', 'Task List', 'Created By'` are requir
 
 Note: Internally, Tasks are keyed to TaskLists, not to Groups (TaskLists are in Gruops). However, we request the Group in the CSV
 because it's possible to have multiple TaskLists with the same name in different groups; i.e. we need it for namespacing and permissions.
-
 
 ### Import Rules
 
@@ -199,7 +195,6 @@ For each valid row, we need to decide whether to create a new task or update an 
 
 Otherwise we create a new task.
 
-
 ## Mail Tracking
 
 What if you could turn django-todo into a shared mailbox? Django-todo includes an optional feature that allows emails
@@ -209,9 +204,9 @@ responded to what.
 
 To enable mail tracking, you need to:
 
- - Define an email backend for outgoing emails
- - Define an email backend for incoming emails
- - Start a worker, which will wait for new emails
+* Define an email backend for outgoing emails
+* Define an email backend for incoming emails
+* Start a worker, which will wait for new emails
 
 In settings:
 
@@ -266,6 +261,7 @@ Optionally, the email addresses of incoming emails can be mapped back to django 
 This isn't enabled by default, as some domains are misconfigured and do not prevent impersonation. If this option is enabled and your setup doesn't properly authenticate emails, malicious incoming emails might mistakenly be attributed to users.
 
 Settings:
+
 ```python
 TODO_MAIL_USER_MAPPER = None # Set to True if you would like to match users. If you do not have authentication setup, do not set this to True.
 ```
@@ -299,14 +295,13 @@ LOGGING = {
 }
 ```
 
-
 ## Running Tests
 
 django-todo uses pytest exclusively for testing. The best way to run the suite is to clone django-todo into its own directory, install pytest, then:
 
-	pip install pytest pytest-django
-	pip install --editable .
-	pytest -x -v
+ pip install pytest pytest-django
+ pip install --editable .
+ pytest -x -v
 
 ## Version History
 
@@ -402,11 +397,11 @@ ALL groups, not just the groups they "belong" to)
 
 django-todo 2.0 was rebuilt almost from the ground up, and included some radical changes, including model name changes. As a result, it is *not compatible* with data from django-todo 1.x. If you would like to upgrade an existing installation, try this:
 
-*  Use `./manage.py dumpdata todo --indent 4 > todo.json` to export your old todo data
-*  Edit the dump file, replacing the old model names `Item` and `List` with the new model names (`Task` and `TaskList`)
-*  Delete your existing todo data
-*  Uninstall the old todo app and reinstall
-*  Migrate, then use `./manage.py loaddata todo.json` to import the edited data
+* Use `./manage.py dumpdata todo --indent 4 > todo.json` to export your old todo data
+* Edit the dump file, replacing the old model names `Item` and `List` with the new model names (`Task` and `TaskList`)
+* Delete your existing todo data
+* Uninstall the old todo app and reinstall
+* Migrate, then use `./manage.py loaddata todo.json` to import the edited data
 
 ### Why not provide migrations?
 
