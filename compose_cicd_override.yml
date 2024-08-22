@@ -1,0 +1,14 @@
+services:
+  django: &django
+    # make the env files optional
+    env_file:
+      - path: ./.envs/.production/.django
+        required: false
+      - path: ./.envs/.production/.postgres
+        required: false
+  celeryworker:
+    <<: *django
+  celerybeat:
+    <<: *django
+  flower:
+    <<: *django

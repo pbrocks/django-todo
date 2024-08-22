@@ -1,0 +1,2 @@
+WS_URL=ws://localhost:8400 # rebuild after changing: docker-compose -f local.yml up -d
+#WS_URL=wss://8f7a-24-181-68-79.ngrok-free.app  # Example ngrok subdomain

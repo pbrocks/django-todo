@@ -1,0 +1,10 @@
+authtoken: 'Your token here.'
+version: '2'
+region: us
+tunnels:
+  web_app:
+    addr: 3000
+    proto: http
+  web_socket:
+    addr: 8400
+    proto: http

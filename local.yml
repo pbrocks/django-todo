@@ -1,0 +1,108 @@
+# version is obsolete
+#version: '3.9'
+
+# use extension fields to define a global log configuration to use in multiple services via an alias (*) to the anchor (&)
+# https://docs.docker.com/compose/compose-file/compose-file-v3/#extension-fields
+x-logging: &default-logging
+  options:
+    max-size: '20m'
+    max-file: '5'
+  driver: json-file
+
+volumes:
+  todo_local_postgres_data: {}
+  todo_local_postgres_data_backups: {}
+
+services:
+  todo_django: &django
+    logging: *default-logging
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: todo_local_django
+    container_name: todo_local_django
+    depends_on:
+      - todo_postgres
+      - todo_redis
+      - todo_mailhog
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - '8400:8400'
+    command: /start
+
+  todo_postgres:
+    logging: *default-logging
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: todo_production_postgres
+    container_name: todo_local_postgres
+    volumes:
+      - todo_local_postgres_data:/var/lib/postgresql/data
+      - todo_local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - '6544:5432'
+  todo_docs:
+    logging: *default-logging
+    image: todo_local_docs
+    container_name: todo_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./todo:/app/todo:z
+    ports:
+      - '9400:9400'
+    command: /start-docs
+
+  todo_mailhog:
+    logging: *default-logging
+    image: mailhog/mailhog:v1.0.0
+    container_name: todo_local_mailhog
+    ports:
+      - '8025:8025'
+
+  todo_redis:
+    logging: *default-logging
+    image: redis:6
+    container_name: todo_local_redis
+
+  todo_celeryworker:
+    <<: *django
+    image: todo_local_celeryworker
+    container_name: todo_local_celeryworker
+    depends_on:
+      - todo_redis
+      - todo_postgres
+      - todo_mailhog
+    ports: []
+    command: /start-celeryworker
+
+  todo_celerybeat:
+    <<: *django
+    image: todo_local_celerybeat
+    container_name: todo_local_celerybeat
+    depends_on:
+      - todo_redis
+      - todo_postgres
+      - todo_mailhog
+    ports: []
+    command: /start-celerybeat
+
+  todo_flower:
+    <<: *django
+    image: todo_local_flower
+    container_name: todo_local_flower
+    ports:
+      - '5566:5566'
+    command: /start-flower

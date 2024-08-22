@@ -1,0 +1,41 @@
+# version is obsolete
+#version: '3.9'
+
+#volumes:
+#  todo_local_postgres_data: {}
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: todo_local_django
+    container_name: todo_local_django
+    depends_on:
+      - postgres
+      - redis
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    #volumes:
+    #  - .:/app:z
+    ports:
+      - '8400:8400'
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: todo_production_postgres
+    container_name: todo_local_postgres
+    #volumes:
+    #  - todo_local_postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.envs/.local/.postgres
+    ports:
+      - '6543:5432'
+
+  redis:
+    image: redis:6
+    container_name: todo_local_redis
