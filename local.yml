@@ -22,7 +22,7 @@ services:
     image: todo_local_django
     container_name: todo_local_django
     depends_on:
-      - todo_postgres
+      - postgres
       - todo_mailpit
     volumes:
       - .:/app:z
@@ -33,7 +33,7 @@ services:
       - '${TODO_PORT:-8400}:8400'
     command: /start
 
-  todo_postgres:
+  postgres:
     logging: *default-logging
     build:
       context: .
@@ -82,6 +82,6 @@ services:
           PMA_HOST: todo_db
           UPLOAD_LIMIT: 300M
       depends_on:
-          - todo_postgres
+          - postgres
       ports:
           - '${FORWARD_PMA_PORT:-8306}:80'
